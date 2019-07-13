@@ -75,10 +75,12 @@ static irqreturn_t hall_interrupt(int irq, void *data)
             if (hall->state) {
                 input_report_key(hall_info->ipdev, KEY_HALL_OPEN, 1);
                 input_report_key(hall_info->ipdev, KEY_HALL_OPEN, 0);
+                input_report_switch(hall_info->ipdev, SW_LID, 0);
                 input_sync(hall_info->ipdev);
             }else{
                 input_report_key(hall_info->ipdev, KEY_HALL_CLOSE, 1);
                 input_report_key(hall_info->ipdev, KEY_HALL_CLOSE, 0);
+                input_report_switch(hall_info->ipdev, SW_LID, 1);
                 input_sync(hall_info->ipdev);
             }
        } else if (!strcmp(hall->irq_name, HALL_HOLDER_IRQ)) {
@@ -262,7 +264,9 @@ static int hall_probe(struct platform_device *pdev)
 	input_set_capability(hall_info->ipdev, EV_KEY, KEY_HALL_CLOSE);
 	input_set_capability(hall_info->ipdev, EV_KEY, KEY_HALL_HOLDER_OPEN);
 	input_set_capability(hall_info->ipdev, EV_KEY, KEY_HALL_HOLDER_CLOSE);
+	input_set_capability(hall_info->ipdev, EV_SW, SW_LID);
 	set_bit(INPUT_PROP_NO_DUMMY_RELEASE, hall_info->ipdev->propbit);
+	set_bit(EV_SW, hall_info->ipdev->evbit);
 	rc = input_register_device(hall_info->ipdev);
 	if (rc) {
 		pr_err("hall_probe: input_register_device fail rc=%d\n", rc);
