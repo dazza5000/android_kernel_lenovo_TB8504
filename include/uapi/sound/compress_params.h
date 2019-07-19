@@ -488,7 +488,8 @@ struct snd_codec {
 	__u32 align;
 	__u32 compr_passthr;
 	union snd_codec_options options;
-	__u32 reserved[3];
+	__u32 flags;
+	__u32 reserved[2];
 } __attribute__((packed, aligned(4)));
 
 struct snd_codec_metadata {
